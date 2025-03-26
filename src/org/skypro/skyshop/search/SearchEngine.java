@@ -1,5 +1,7 @@
 package org.skypro.skyshop.search;
 
+import org.skypro.skyshop.exceptions.BestResultNotFound;
+
 public class SearchEngine {
 
     private Searchable[] searchables;
@@ -40,7 +42,7 @@ public class SearchEngine {
         searchables[freeIndex] = searchable;
     }
 
-    private int getFreeIndex(){
+    private int getFreeIndex() {
         for (int i = 0; i < searchables.length; i++) {
             if (searchables[i] == null) {
                 return i;
@@ -49,5 +51,44 @@ public class SearchEngine {
         return NOT_FOUND;
     }
 
+    public Searchable findMostRelevant(String search) throws BestResultNotFound {
 
-}
+        Searchable mostRelevant = null;
+        int maxCount = 0;
+
+        for (Searchable searchable : searchables) {
+
+            if (searchable == null) {
+                continue;
+            }
+
+            String searchTerm = searchable.getSearchTerm();
+            int count = countOccurrences(searchTerm, search);
+
+            if (count > maxCount) {
+                maxCount = count;
+                mostRelevant = searchable;
+            }
+        }
+
+        if (mostRelevant == null) {
+            throw new BestResultNotFound("Нет подходящих вариантов: " + search);
+        }
+
+        return mostRelevant;
+    }
+
+    private int countOccurrences(String text, String search) {
+        int count = 0;
+        int index = 0;
+
+        while ((index = text.indexOf(search, index)) != -1) {
+            count++;
+            index += search.length();
+        }
+
+        return count;
+    }
+
+
+    }

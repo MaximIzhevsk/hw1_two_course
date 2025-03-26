@@ -1,7 +1,9 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.article.Article;
+import org.skypro.skyshop.exceptions.BestResultNotFound;
 import org.skypro.skyshop.search.SearchEngine;
+import org.skypro.skyshop.search.Searchable;
 
 import java.util.Arrays;
 
@@ -32,7 +34,7 @@ public class App {
         int totalCost = basket.getTotalCost();  //получение общей стоимости корзины
         System.out.printf("Общая стоимость корзины: %d\n", totalCost);
 
-        //basket.hasProduct();  //поиск продукта в корзине
+        basket.hasProduct("Яблоко");  //поиск продукта в корзине
 
         basket.clearBasket();  //очистка корзины
         basket.printBasketContent();  //печать содержимого корзины
@@ -40,7 +42,7 @@ public class App {
         totalCost = basket.getTotalCost();  //получение общей стоимости
         System.out.printf("Общая стоимость корзины: %d\n", totalCost);
 
-        //basket.hasProduct();  //поиск продукта в корзине
+        basket.hasProduct("Киви");  //поиск продукта в корзине
 
         //Создайте один объект типа
         //SearchEngine
@@ -66,7 +68,9 @@ public class App {
         searchEngine.add(chair);
 
         String searchQuery = "Банан";
-        System.out.println("Поиск /" +  searchQuery + "/ " + Arrays.toString(searchEngine.search(searchQuery)));
+        System.out.print("Поиск /" +  searchQuery + "/ ");
+        printSearchResult(searchEngine.search(searchQuery));
+
 
         String searchQuery1 = "Апельсин";
         System.out.println("Поиск /" +  searchQuery1 + "/ " + Arrays.toString(searchEngine.search(searchQuery1)));
@@ -74,9 +78,42 @@ public class App {
         String searchQuery2 = "Манго";
         System.out.println("Поиск /" +  searchQuery2 + " /" + Arrays.toString(searchEngine.search(searchQuery2)));
 
+        //Создайте несколько продуктов и нарочно заполните их поля неправильно.
+
+        Product mouse = new SimpleProduct("Mouse", 0);
+        Product cat = new DiscountedProduct("Cat", 23, 101);
+        Product dog = new FixPriceProduct(" ");
+
+        //Продемонстрируйте в методе main новый метод поиска в двух сценариях:
+        //когда нужный объект существует,
+        //когда метод выбрасывает исключение.
 
 
 
 
+        try {
+            Searchable mostRelevant = searchEngine.findMostRelevant("Апельсин");
+            System.out.println("Наиболее подходящий " + mostRelevant.getSearchTerm());
+        } catch (BestResultNotFound e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            Searchable mostRelevantEx = searchEngine.findMostRelevant("hfbfgh");
+            System.out.println("Наиболее подходящий " + mostRelevantEx.getSearchTerm());
+        } catch (BestResultNotFound e) {
+            System.out.println(e.getMessage());
+        }
+
+
+
+    }
+
+    public static void printSearchResult( Searchable[] searchables) {
+        for (Searchable searchable : searchables) {
+            if (searchable != null) {
+                System.out.println(searchable);
+            }
+        }
     }
 }
