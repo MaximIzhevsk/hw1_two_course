@@ -4,9 +4,16 @@ public class SimpleProduct extends Product{
 
     private int price;
 
-    public SimpleProduct(String name, int price) {
+    public SimpleProduct(String name, int price) throws IllegalArgumentException {
         super(name);
-        this.price = price;
+
+            if (price > 0) {
+                this.price = price;
+            } else {
+                throw new IllegalArgumentException("Цена должна быть больше 0");
+            }
+
+
     }
 
     @Override
