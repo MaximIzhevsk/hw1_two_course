@@ -8,26 +8,30 @@ import org.skypro.skyshop.search.Searchable;
 import java.util.Arrays;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         ProductBasket basket = new ProductBasket();  //создание корзины
 
-        Product apple = new SimpleProduct("Яблоко", 100);  //создание яблока
-        basket.addProduct(apple);  //добавление яблока
 
-        Product banana = new DiscountedProduct("Банан", 90, 30);
-        basket.addProduct(banana);
+            Product apple = new SimpleProduct("Яблоко", 100);  //создание яблока
+            basket.addProduct(apple);  //добавление яблока
 
-        Product orange = new FixPriceProduct("Апельсин");
-        basket.addProduct(orange);
+            Product banana = new DiscountedProduct("Банан", 90, 30);
+            basket.addProduct(banana);
 
-        Product pear = new SimpleProduct("Груша", 70);
-        basket.addProduct(pear);
+            Product orange = new FixPriceProduct("Апельсин");
+            basket.addProduct(orange);
 
-        Product grape = new DiscountedProduct("Виноград", 60, 20);
-        basket.addProduct(grape);
+            Product pear = new SimpleProduct("Груша", 70);
+            basket.addProduct(pear);
 
-        Product peach = new FixPriceProduct("Персик");
-        basket.addProduct(peach);  //добавление в заполненную корзину
+            Product grape = new DiscountedProduct("Виноград", 60, 20);
+            basket.addProduct(grape);
+
+            Product peach = new FixPriceProduct("Персик");
+            basket.addProduct(peach);  //добавление в заполненную корзину
+
+
+
 
         basket.printBasketContent();  //печать содержимого корзины
 
@@ -80,9 +84,25 @@ public class App {
 
         //Создайте несколько продуктов и нарочно заполните их поля неправильно.
 
-        Product mouse = new SimpleProduct("Mouse", 0);
-        Product cat = new DiscountedProduct("Cat", 23, 101);
-        Product dog = new FixPriceProduct(" ");
+        try {
+            Product mouse = new SimpleProduct("Mouse", 0);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            Product cat = new DiscountedProduct("Cat", 3, 101);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            Product dog = new FixPriceProduct(" ");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+
 
         //Продемонстрируйте в методе main новый метод поиска в двух сценариях:
         //когда нужный объект существует,

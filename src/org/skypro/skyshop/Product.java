@@ -6,16 +6,14 @@ public abstract class Product implements Searchable {
     private String name;
 
 
-    public Product(String name) {
-        try {
+    public Product(String name) throws IllegalArgumentException {
+
             if (!name.isBlank()) {
                 this.name = name;
             } else {
                 throw new IllegalArgumentException("Некорректное название продукта");
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
+
 
 
     }
