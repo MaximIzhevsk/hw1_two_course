@@ -1,7 +1,7 @@
 package org.skypro.skyshop;
 
 import java.util.Objects;
-import java.util.Scanner;
+
 
 public class ProductBasket {
     private static final int MAX_PRODUCTS = 5;  //макс размер корзины
@@ -65,10 +65,7 @@ public class ProductBasket {
     }
 
     //проверка с печатью на наличие продукта в корзине
-    public void hasProduct() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Введите название продукта для поиска");
-        String searchProduct = scanner.nextLine();
+    public void hasProduct(String searchProduct) {
         if (containsProduct(searchProduct)) {
             System.out.println(searchProduct + " есть в корзине");
         } else {
