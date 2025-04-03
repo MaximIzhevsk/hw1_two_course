@@ -6,6 +6,7 @@ import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -40,8 +41,8 @@ public class App {
 
         basket.hasProduct("Яблоко");  //поиск продукта в корзине
 
-        basket.clearBasket();  //очистка корзины
-        basket.printBasketContent();  //печать содержимого корзины
+        //basket.clearBasket();  //очистка корзины
+        //basket.printBasketContent();  //печать содержимого корзины
 
         totalCost = basket.getTotalCost();  //получение общей стоимости
         System.out.printf("Общая стоимость корзины: %d\n", totalCost);
@@ -77,10 +78,10 @@ public class App {
 
 
         String searchQuery1 = "Апельсин";
-        System.out.println("Поиск /" +  searchQuery1 + "/ " + Arrays.toString(searchEngine.search(searchQuery1)));
+        System.out.println("Поиск /" +  searchQuery1 + "/ " + searchEngine.search(searchQuery1));
 
         String searchQuery2 = "Манго";
-        System.out.println("Поиск /" +  searchQuery2 + " /" + Arrays.toString(searchEngine.search(searchQuery2)));
+        System.out.println("Поиск /" +  searchQuery2 + " /" + searchEngine.search(searchQuery2));
 
         //Создайте несколько продуктов и нарочно заполните их поля неправильно.
 
@@ -125,15 +126,39 @@ public class App {
             System.out.println(e.getMessage());
         }
 
+        //домашка по List
 
+        System.out.println("Домашка по спискам");
+        basket.printBasketContent(); //печать содержимого корзины
+
+        List<Product> removedProducts =  basket.removeProductByName("Яблоко");  //удаление яблока
+        if (removedProducts.isEmpty()) {
+            System.out.println("Список пуст");
+        } else {
+            System.out.println("Удалённые продукты: " + removedProducts);  //список удалённых яблок
+        }
+
+        System.out.println("Корзина после удаления яблока:");
+        basket.printBasketContent();
+
+        removedProducts =  basket.removeProductByName("Дуриан");  //удаление несуществующего
+        if (removedProducts.isEmpty()) {
+            System.out.println("Список пуст");
+        } else {
+            System.out.println("Удалённые продукты: " + removedProducts);
+        }
+
+        basket.printBasketContent();  //корзина после удаления несуществующего
 
     }
 
-    public static void printSearchResult( Searchable[] searchables) {
+
+    public static void printSearchResult( List<Searchable> searchables) {
         for (Searchable searchable : searchables) {
             if (searchable != null) {
                 System.out.println(searchable);
             }
         }
+
     }
 }
