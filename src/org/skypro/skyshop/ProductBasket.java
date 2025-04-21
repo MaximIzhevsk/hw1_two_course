@@ -3,67 +3,74 @@ package org.skypro.skyshop;
 import java.util.*;
 
 
-public class ProductBasket {
-    private static final int MAX_PRODUCTS = 5;  //макс размер корзины
-    private List<Product> products;  //массив из продуктов класса Product
-    private int countProducts;  //счетчик продуктов в корзине
 
-    //конструктор создает массив из 5 объектов класса Product
+public class ProductBasket {
+
+    private Map<String, List<Product>> productsMap;
+
+
     public ProductBasket() {
-        this.products = new LinkedList<>();
-        //this.countProducts = 0;
+        this.productsMap = new HashMap<>();
     }
 
     //добавление в корзину, и проверка на заполненность
     public void addProduct(Product product) {
-        products.add(product);
-        countProducts++;
-//        if (countProducts >= MAX_PRODUCTS) {
-//            System.out.println("Невозможно добавить продукт");
-//            return;
-//        }
-//
-//        products[countProducts++] = Objects.requireNonNull(product);  //проверяем, что добавляемый объект не null,
-//        //добавляем его и увеличиваем счетчик на 1
+        productsMap.computeIfAbsent(product.getName(), k-> new ArrayList<>()).add(product);
     }
 
     //общая стоимость корзины
+
+
+
     public int getTotalCost() {
-        int totalCost = 0;
-        for (int i = 0; i < countProducts; i++) {
-            totalCost += products.get(i).getPrice();
+        int sum = 0;
+        for (List<Product> productList : productsMap.values()) {
+            for (Product product : productList) {
+                sum += product.getPrice();
+            }
         }
-        return totalCost;
+        return sum;
     }
 
     //печать корзины
     public void printBasketContent() {
-        if (isEmpty()) {
+        if (productsMap.isEmpty()) {
             System.out.println("в корзине пусто");
             return;
         }
 
-        int specialCount = 0;
-        for (int i = 0; i < countProducts; i++) {
-            System.out.println(products.get(i).toString());
+        // Проходим по каждому элементу карты вручную
+        Iterator<Map.Entry<String, List<Product>>> iterator = productsMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, List<Product>> entry = iterator.next();
+            String name = entry.getKey();
+            List<Product> productsList = entry.getValue();
 
-            if (products.get(i).isSpecial()) {
-                specialCount++;
+            // Проходим по списку продуктов вручную
+            for (Product product : productsList) {
+                System.out.println(product.toString());
             }
         }
 
-        System.out.printf("Итого: %d\n", getTotalCost());
+        // Подсчет специальных товаров вручную
+        int specialCount = 0;
+        for (List<Product> products : productsMap.values()) {
+            for (Product product : products) {
+                if (product.isSpecial()) {
+                    specialCount++;
+                }
+            }
+        }
+
+        System.out.println("Итого: " + getTotalCost());
         System.out.println("Специальных товаров: " + specialCount);
     }
 
+
+
     //проверка наличия продукта в корзине
     public boolean containsProduct(String name) {
-        for (int i = 0; i < countProducts; i++) {
-            if (products.get(i).getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
+       return productsMap.containsKey(name);
     }
 
     //проверка с печатью на наличие продукта в корзине
@@ -77,33 +84,34 @@ public class ProductBasket {
 
     //очистка корзины
     public void clearBasket() {
-        for (int i = 0; i < countProducts; i++) {
-            products.set(i, null);
-        }
-        countProducts = 0;
-    }
-
-    //проверка, является ли корзина пустой
-    private boolean isEmpty() {
-        return countProducts == 0;
+        productsMap.clear();
     }
 
     public List<Product> removeProductByName(String name) {
-        List<Product> removeProducts = new ArrayList<>();
-        Iterator<Product> iterator = products.iterator();
+        List<Product> result = new ArrayList<>();
 
-        while (iterator.hasNext()) {
-            Product product = iterator.next();
-            if (product.getName().equals(name)) {
-                removeProducts.add(product);
-                iterator.remove();
-                countProducts--;
-            }
+        // Проверяем наличие ключа в мапе
+        if (!productsMap.containsKey(name)) {
+            return Collections.emptyList(); // Если товар отсутствует, возвращаем пустой список
         }
 
-        return removeProducts;
+        // Получаем список продуктов по указанному ключу
+        List<Product> productsToRemove = productsMap.get(name);
 
+        // Копируем продукты перед удалением
+        result.addAll(productsToRemove);
+
+        // Удаляем сам список продуктов из мапы
+        productsMap.remove(name);
+
+        return result;
     }
+
+
+
+
+
+
 
 }
     
