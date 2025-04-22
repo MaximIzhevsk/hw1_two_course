@@ -33,4 +33,9 @@ public class Article implements Searchable {
     public String getSearchContentType() {
         return "ARTICLE";
     }
+
+    @Override
+    public String getName() {
+        return "";
+    }
 }

@@ -2,49 +2,32 @@ package org.skypro.skyshop.search;
 
 import org.skypro.skyshop.exceptions.BestResultNotFound;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SearchEngine {
 
-    private List<Searchable> searchables;
-
-    private static final int MAX_SEARCH_RESULTS = 5;
-    private static final int DEFAULT_SIZE = 50;
-    private static final int NOT_FOUND = -1;
-
-    public SearchEngine(int size) {
-        this.searchables = new ArrayList<>(size);
-    }
+    private Collection<Searchable> searchables;
 
     public SearchEngine() {
         this.searchables = new ArrayList<>();
     }
 
-    public List<Searchable> search(String query) {
-        List<Searchable> results = new ArrayList<>();
-        String lowerQuery = query.toLowerCase();
+    public Map<String, Searchable> search(String query) {
+        Map<String, Searchable> result = new TreeMap<>(); // используем TreeMap для автоматической сортировки
 
-        for (Searchable searchable : searchables) {
-            if (searchable.getSearchTerm().toLowerCase().contains(lowerQuery)) {
-                results.add(searchable);
+        for (Searchable searchable : searchables) { // проходим по каждому объекту
+            if (searchable.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
+                result.put(searchable.getName(), searchable); // добавляем подходящий объект в карту
             }
         }
-        return results;
+
+        return result;
     }
+
 
     public void add(Searchable searchable) {
         searchables.add(searchable);
     }
-
-//    private int getFreeIndex() {
-//        for (int i = 0; i < searchables.length; i++) {
-//            if (searchables[i] == null) {
-//                return i;
-//            }
-//        }
-//        return NOT_FOUND;
-//    }
 
     public Searchable findMostRelevant(String search) throws BestResultNotFound {
 
@@ -86,4 +69,4 @@ public class SearchEngine {
     }
 
 
-    }
+}
